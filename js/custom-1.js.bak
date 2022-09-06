@@ -1,0 +1,41 @@
+// run this command in your terminal to minify custom-1.js and style.css: gulp minify
+
+
+(function($) {
+
+
+    // Mobile Menu
+    $( ".menu-icon .icon" ).click(function() {
+        $(this).toggleClass('open');
+        $('.nav-primary').toggleClass('open');
+        $('main').toggleClass('open');
+        $('html').toggleClass('no-scroll');
+    });
+
+
+    // Mobile menu nested open close
+    $( ".menu-item-has-children a" ).click( function() {
+        
+        if($(this).parent().hasClass('expanded')){
+            var newState = false;
+        } else {
+            var newState = true;
+        }
+
+        $(this).parent().siblings('.expanded').removeClass('expanded');
+        $(this).parent().find('.expanded').removeClass('expanded');
+        
+        if(newState==true){ 
+            $(this).parent().addClass('expanded'); 
+        } else {
+            $(this).parent().removeClass('expanded'); 
+        }
+
+        $(this).parent().siblings('li').find('.sub-menu').hide();
+        var subMenu = $(this).siblings('.sub-menu');
+        subMenu.toggle();
+        var childMenus = subMenu.children('ul'); 
+    });
+    
+    
+})( jQuery );

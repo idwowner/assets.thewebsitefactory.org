@@ -1,0 +1,185 @@
+<?php 
+
+$client_logo = get_post_meta( '325', '_wp_attached_file', true );
+
+$config['client_procedures_performed'] = unserialize($config['client_procedures_performed']);
+
+$config['json-schema'] = '<script type="application/ld+json">{
+    "@context": {
+        "@vocab": "http://schema.org/"
+    },
+    "@graph": [
+        {
+            "@type": "Dentist",
+            "@id": "#Dentist",
+            "url": "' . get_site_url() . '",
+            "priceRange": "Procedure dependent",
+            "name": "' . get_bloginfo('name') . '",
+            "legalName": "' . $config['client_doctor_name'] . ' ' . $config['client_doctor_credentials'] . '",
+            "isAcceptingNewPatients": "True",
+            "logo": "' . get_site_url() . '/' . $config['client_logo_image'] . '",
+            "image": "' . get_site_url() . '/' . $config['client_office_image'] . '",
+            "medicalSpecialty": [
+                "https://www.wikidata.org/wiki/Q27349"
+            ],
+            "address": {
+                "@type": "PostalAddress",
+                "@id": "#MainOfficeAddress"
+            },
+            "sameAs": [';
+
+                if($config['client_facebook_url']!=''){
+                    $config['json-schema'] .= '"' . $config['client_facebook_url'] . '",';
+                }
+                if($config['client_instagram_url']!=''){
+                    $config['json-schema'] .= '"' . $config['client_instagram_url'] . '",';
+                }
+                if($config['client_facebook_url']!=''){
+                    $config['json-schema'] .= '"' . $config['client_twitter_url'] . '",';
+                }
+                $config['json-schema'] = trim($config['json-schema'],',');
+
+            $config['json-schema'] .= '],
+            "member": [
+                {
+                    "@type": "Person",
+                    "name": "' . $config['client_doctor_name'] . '",
+                    "honorificPrefix": "Dr.",
+                    "honorificSuffix": "' . $config['client_doctor_credentials'] . '",
+                    "sameAs": "' . get_site_url() . $config['client_doctor_bio_url'] . '",
+                    "memberOf": [';
+                    
+                        if($config['client_member_of_1']!=''){ 
+                            $config['json-schema'] .= '{
+                                "@type": "MedicalOrganization",
+                                "name": "' . $config['client_member_of_1'] . '"
+                            },';
+                        }
+                        if($config['client_member_of_2']!=''){ 
+                            $config['json-schema'] .= '{
+                                "@type": "MedicalOrganization",
+                                "name": "' . $config['client_member_of_2'] . '"
+                            },';
+                        }
+                        if($config['client_member_of_3']!=''){ 
+                            $config['json-schema'] .= '{
+                                "@type": "MedicalOrganization",
+                                "name": "' . $config['client_member_of_3'] . '"
+                            },';
+                        }
+                        $config['json-schema'] = trim($config['json-schema'],',');    
+                        
+                    $config['json-schema'] .= '],
+                    "alumniOf": [';
+
+                        if($config['client_educational_institution_1']!=''){
+                            $config['json-schema'] .= '{
+                                "@type": "EducationalOrganization",
+                                "name": "' . $config['client_educational_institution_1'] . '"
+                            },';
+                        }
+                        if($config['client_educational_institution_2']!=''){
+                            $config['json-schema'] .= '{
+                                "@type": "EducationalOrganization",
+                                "name": "' . $config['client_educational_institution_2'] . '"
+                            },';
+                        }
+                        if($config['client_educational_institution_3']!=''){
+                            $config['json-schema'] .= '{
+                                "@type": "EducationalOrganization",
+                                "name": "' . $config['client_educational_institution_3'] . '"
+                            },';
+                        }
+                        $config['json-schema'] = trim($config['json-schema'],',');
+                        
+                    $config['json-schema'] .= '],
+                    "image": "' . get_site_url() . '/' . $config['client_doctor_image'] . '"
+                }
+            ],
+            "areaServed": [';
+                if($config['client_area_served_1']!=''){
+                    $config['json-schema'] .= '"' . $config['client_area_served_1'] . '",';
+                }
+                if($config['client_area_served_2']!=''){
+                    $config['json-schema'] .= '"' . $config['client_area_served_2'] . '",';
+                }
+                if($config['client_area_served_3']!=''){
+                    $config['json-schema'] .= '"' . $config['client_area_served_3'] . '",';
+                }
+                if($config['client_area_served_4']!=''){
+                    $config['json-schema'] .= '"' . $config['client_area_served_4'] . '",';
+                }
+                if($config['client_area_served_5']!=''){
+                    $config['json-schema'] .= '"' . $config['client_area_served_5'] . '",';
+                }
+                if($config['client_area_served_6']!=''){
+                    $config['json-schema'] .= '"' . $config['client_area_served_6'] . '",';
+                }
+                $config['json-schema'] = trim($config['json-schema'],',');
+                
+            $config['json-schema'] .= ']
+        },
+        [
+            {
+                "parentOrganization": {
+                    "@id": "#Dentist"
+                },
+                "priceRange": "Procedure dependent",
+                "@type": "Dentist",
+                "name": "' . get_bloginfo('name') . '",
+                "address": {
+                    "@type": "PostalAddress",
+                    "@id": "#MainOfficeAddress",
+                    "streetAddress": "' . $config['client_address'] . ' ' . $config['client_address_2'] . '",
+                    "postalCode": "' . $config['client_zip'] . '",
+                    "addressLocality": "' . $config['client_city'] . '",
+                    "addressRegion": "' . $config['client_state']  . '",
+                    "addressCountry": "United States",
+                    "telephone": "+1' . $config['client_office_phone'] . '"';
+                    if($config['client_office_fax']!=''){ $config['json-schema'] .= ',"faxNumber": "' . $config['client_office_fax'] . '"'; }
+                    $config['json-schema'] .= '},
+                "image": "' . get_site_url() . '/' . $config['client_office_image'] . '",
+                "openingHours": [';
+                    if($config['client_monday_open']!=0){ 
+                        $config['json-schema'] .= '"Mo ' . $config['client_monday_open'] . '-' . $config['client_monday_close'] . '",';
+                    }
+                    if($config['client_tuesday_open']!=0){ 
+                        $config['json-schema'] .= '"Tu ' . $config['client_tuesday_open'] . '-' . $config['client_tuesday_close'] . '",';
+                    }
+                    if($config['client_wednesday_open']!=0){ 
+                        $config['json-schema'] .= '"We ' . $config['client_wednesday_open'] . '-' . $config['client_wednesday_close'] . '",';
+                    }
+                    if($config['client_thursday_open']!=0){ 
+                        $config['json-schema'] .= '"Th ' . $config['client_thursday_open'] . '-' . $config['client_thursday_close'] . '",';
+                    }
+                    if($config['client_friday_open']!=0){ 
+                        $config['json-schema'] .= '"Fr ' . $config['client_friday_open'] . '-' . $config['client_friday_close'] . '",';
+                    }
+                    if($config['client_saturday_open']!=0){ 
+                        $config['json-schema'] .= '"Sa ' . $config['client_saturday_open'] . '-' . $config['client_saturday_close'] . '",';
+                    }
+                    if($config['client_sunday_open']!=0){ 
+                        $config['json-schema'] .= '"Su ' . $config['client_sunday_open'] . '-' . $config['client_sunday_close'] . '",';
+                    }
+                    $config['json-schema'] = trim($config['json-schema'],',');
+                    
+                $config['json-schema'] .= '],
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": "' . $config['client_location_latitude'] . '",
+                    "longitude": "'  . $config['client_location_longitude'] . '"
+                },
+                "url": "' . get_bloginfo('url') . '/' . $config['client_contact_slug'] . '",';
+                /*"aggregateRating": {
+                    "@type": "AggregateRating",
+                    "description": "Google patient reviews",
+                    "bestRating": "5",
+                    "ratingValue": "5.0",
+                    "reviewCount": "124"
+                },*/
+                $config['json-schema'] .= '"hasMap": "' . $config['client_map_url'] . '"
+            }
+        ]
+    ]
+}</script>';
+

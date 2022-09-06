@@ -1,0 +1,478 @@
+<?php
+// setup theme 
+if ( ! function_exists( 'wf_main_theme_setup' ) ) :
+
+    function wf_main_theme_setup() {
+
+        // featured images
+        add_theme_support( 'post-thumbnails' );
+
+        // menus
+        register_nav_menus( array(
+            'primary' 	=> __( 'Main Menu',      'starter-theme' ),
+            'footer'  	=> __( 'Footer Menu', 'starter-theme' ),
+        ) );
+
+        // html5 support
+        add_theme_support( 'html5', array(
+            'search-form', 'comment-form', 'comment-list', 'gallery', 'caption'
+        ) );
+
+
+        // custom image sizes
+        add_image_size( 'square-768', 768, 768, true );
+        add_image_size( 'blog-768', 768, 512, true );
+    }
+
+endif;
+add_action( 'after_setup_theme', 'wf_main_theme_setup' );
+
+// ACF Options Page
+if (function_exists('acf_add_options_page')) {
+    acf_add_options_page(array(
+       'page_title'     =>  'Site Settings',
+       'menu_title'     =>  'Site Settings',
+       'menu_slug'      =>  'site-settings',
+       'capability'     =>  'edit_posts',
+       'parent_slug'    =>  '',
+       'position'       =>  '8.5',
+       'icon_url'       =>  'dashicons-edit-large',
+       'redirect'       =>  false
+    ));
+    
+    acf_add_options_sub_page(array(
+       'page_title'     =>  'Office Info',
+       'menu_title'     =>  'Office Info',
+       'menu_slug'      =>  'site-settings-office-info',
+       'capability'     =>  'edit_posts',
+       'parent_slug'    =>  'site-settings',
+       'position'       =>  false,
+       'icon_url'       =>  'dashicons-admin-home'
+    ));
+    
+    acf_add_options_sub_page(array(
+       'page_title'     =>  'Social Links',
+       'menu_title'     =>  'Social Links',
+       'menu_slug'      =>  'site-settings-social-links',
+       'capability'     =>  'edit_posts',
+       'parent_slug'    =>  'site-settings',
+       'position'       =>  false,
+       'icon_url'       =>  'dashicons-share'
+    ));
+    
+    acf_add_options_sub_page(array(
+       'page_title'     =>  'Content Options',
+       'menu_title'     =>  'Content Options',
+       'menu_slug'      =>  'site-settings-content-options',
+       'capability'     =>  'edit_posts',
+       'parent_slug'    =>  'site-settings',
+       'position'       =>  false,
+       'icon_url'       =>  'dashicons-format-image'
+    ));
+}
+
+
+// register sidebars
+function wf_widgets_init() {
+
+    register_sidebar( array(
+        'name'          	=> __( 'Innerpage Sidebar', 'wf' ),
+        'id'            	=> 'sidebar-innerpage',
+        'description'  	 	=> __( 'Add widgets here to appear in your general sidebar.', 'wf' ),
+        'before_widget' 	=> '<aside>',
+        'after_widget'  	=> '</aside>',
+        'before_title'  	=> '<div class="widget-title">',
+        'after_title'  		=> '</div>',
+    ) );
+
+    register_sidebar( array(
+        'name'          	=> __( 'Blog Sidebar', 'wf' ),
+        'id'            	=> 'sidebar-blog',
+        'description'  	 	=> __( 'Add widgets here to appear in your blog sidebar.', 'wf' ),
+        'before_widget' 	=> '<aside>',
+        'after_widget'  	=> '</aside>',
+        'before_title'  	=> '<div class="widget-title">',
+        'after_title'  		=> '</div>',
+    ) );
+
+}
+add_action( 'widgets_init', 'wf_widgets_init' );
+
+
+// enqueue fonts and scripts
+function wf_main_enqueue_scripts() {
+
+    global $config;
+    global $post;
+
+    
+
+    // css
+    wp_enqueue_style( 'base-styles', 'https://assets.thewebsitefactory.org/css/style.css');
+    wp_enqueue_style( 'owl-main', 'https://assets.thewebsitefactory.org/css/owl.carousel.min.css');
+    wp_enqueue_style( 'owl-theme', 'https://assets.thewebsitefactory.org/css/owl.theme.min.css');
+    //wp_enqueue_style( 'icons', 'https://assets.thewebsitefactory.org/css/fontawesome.wf.css');
+
+    // js
+    wp_enqueue_script( 'owl-carousel', 'https://assets.thewebsitefactory.org/js/owl.carousel.min.js', array( 'jquery' ), '', true );
+
+    // front page only scripts
+    if( is_front_page() ) {
+        wp_enqueue_style( 'animate', 'https://assets.thewebsitefactory.org/css/animate.min.css' );
+        wp_enqueue_script( 'waypoints', 'https://assets.thewebsitefactory.org/js/waypoints.min.js', array( 'jquery' ), '', true );
+    }
+
+
+
+
+    // theme specific
+    global $theme_id;
+    $config['icons_folder'] = 'https://assets.thewebsitefactory.org/icons';
+    
+    switch($theme_id){
+
+        case 1:
+            $config['img_folder'] = 'https://assets.thewebsitefactory.org/img/1';
+            
+            // fonts and scripts - theme 1
+            wp_enqueue_style( 'google-font-roboto', '//fonts.googleapis.com/css?family=Roboto:300,400,600,700&display=swap', array() );
+            wp_enqueue_style( 'google-font-source-serif', '//fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap', array());
+            wp_enqueue_style( 'google-font-spartan', '//fonts.googleapis.com/css2?family=Spartan:wght@400;500;600;700&display=swap', array() );
+            wp_enqueue_style( 'custom-styles', 'https://assets.thewebsitefactory.org/css/style-1.css' . '?' . rand(1,9999) );
+            wp_enqueue_style( 'child-styles', get_stylesheet_directory_uri() . '/style.css?12', array('custom-styles') );
+            wp_enqueue_script( 'custom-js', 'https://assets.thewebsitefactory.org/js/custom-1.js' , array( 'jquery' ), '', true );
+            break;
+
+        case 2:
+            $config['img_folder'] = 'https://assets.thewebsitefactory.org/img/2';
+
+            // fonts and scripts - theme 3
+            wp_enqueue_style( 'google-font-nanum', '//fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&display=swap', array() );
+            wp_enqueue_style( 'google-fonts-poppins', '//fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap', array() );
+            wp_enqueue_style( 'custom-styles', 'https://assets.thewebsitefactory.org/css/style-2.css' . '?' . rand(1,9999) );
+            wp_enqueue_style( 'child-styles', get_stylesheet_directory_uri() . '/style.css?12', array('custom-styles') );
+            wp_enqueue_script( 'custom-js', 'https://assets.thewebsitefactory.org/js/custom-2.js' , array( 'jquery' ), '', true );
+            break;
+            
+        case 3:
+            $config['img_folder'] = 'https://assets.thewebsitefactory.org/img/3';
+            
+            // fonts and scripts - theme 4
+            wp_enqueue_style( 'google-font-roboto', '//fonts.googleapis.com/css2?family=Roboto:wght@400;700;800&display=swap', array() );
+            wp_enqueue_style( 'google-fonts-montserrat', '//fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap', array() );
+            wp_enqueue_style( 'google-fonts-playfair', '//fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&display=swap', array() );
+            wp_enqueue_style( 'custom-styles', 'https://assets.thewebsitefactory.org/css/style-3.css' . '?' . rand(1,9999) );
+            wp_enqueue_style( 'child-styles', get_stylesheet_directory_uri() . '/style.css?12', array('custom-styles') );
+            wp_enqueue_script( 'custom-js', 'https://assets.thewebsitefactory.org/js/custom-3.js' , array( 'jquery' ), '', true );
+            break;
+
+        case 4:
+            $config['img_folder'] = 'https://assets.thewebsitefactory.org/img/4';
+
+            // fonts and scripts - theme 5
+            wp_enqueue_style( 'google-font-dmsans', '//fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap', array() );
+            wp_enqueue_style( 'custom-styles', 'https://assets.thewebsitefactory.org/css/style-4.css?12' . '?' . rand(1,9999) );
+            wp_enqueue_style( 'child-styles', get_stylesheet_directory_uri() . '/style.css?12', array('custom-styles') );
+            wp_enqueue_script( 'custom-js', 'https://assets.thewebsitefactory.org/js/custom-4.js?12' , array( 'jquery' ), '', true );
+            break;
+    }
+    
+}
+add_action( 'wp_enqueue_scripts', 'wf_main_enqueue_scripts', 9998, 1 );
+
+
+
+
+
+// add url to menu items (schema)
+function wf_add_atts_to_nav_links( $atts, $item, $args ){
+    $atts['itemprop'] = 'url';
+    return $atts;
+}
+add_filter( 'nav_menu_link_attributes', 'wf_add_atts_to_nav_links', 10, 4 );
+
+
+// add itemprop attr to li (schema)
+function wf_add_attr( $items, $args ) {
+    $dom = new DOMDocument();
+    $dom->loadHTML($items, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $find = $dom->getElementsByTagName('li');
+
+    foreach ($find as $item ) :
+        $item->setAttribute('itemprop','name');
+    endforeach;
+
+    return $dom->saveHTML();
+}
+add_filter('wp_nav_menu_items', 'wf_add_attr', 10, 2);
+
+
+// wp-admin login place Website Factory logo
+function login_logo() { ?>
+    <style type="text/css">
+        body.login div#login h1 a {
+            background-image: url('https://assets.thewebsitefactory.org/img/login-logo.gif?');
+            width: 320px;
+            height: 198px;
+            background-size: cover;
+        }
+    </style>
+<?php }
+add_action( 'login_enqueue_scripts', 'login_logo' );
+
+
+// wp-admin login change logo url
+function put_my_url(){
+    return ('https://thewebsitefactory.org/'); 
+}
+add_filter('login_headerurl', 'put_my_url');
+
+
+// wp-admin login change title
+function put_my_title(){
+    return ('Powered by The Website Factory');
+}
+add_filter('login_headertitle', 'put_my_title');
+
+
+
+// request an appointment - insert entry into database
+function add_entry_to_db($entry, $form) {
+
+    global $request_db_user;
+    global $request_db_pw;
+    global $config;
+    
+    // set the vars
+    $client_id = $config['client_reporting_id']; 
+    $first_name = 	$entry['2.3'];
+    $last_name = 	$entry['2.6'];
+    $email = 	$entry[3];
+    $new_patient = 	$entry[13];
+    $reviews = $entry[11];
+    $entry_date = 	$entry['date_created'];
+    $search_term = 	$entry[6];
+    $city = 	$entry['4.3'];
+    $phone = 	$entry[5];
+
+
+    // connect to the database
+	try {
+        $portal_db = new PDO("mysql:host=localhost;dbname=infinity_idwdata", $request_db_user, $request_db_pw);
+    } 
+    catch( PDOException $e ){
+        die('Cannot connect to the appointment request database via PDO currently.');
+    }
+    
+
+    // prepare the query
+    $statement = $portal_db->prepare("
+        INSERT INTO infinity_idwdata.request_appointment (
+            id, 
+            client_id, 
+            first_name, 
+            last_name, 
+            entry_date, 
+            email, 
+            new_patient, 
+            search_term, 
+            reviews, 
+            address, phone)
+            VALUES	 (
+            :id, 
+            :client_id, 
+            :first_name, 
+            :last_name, 
+            :entry_date, 
+            :email, 
+            :new_patient, 
+            :search_term, 
+            :reviews, 
+            :address, 
+            :phone
+        )
+    ");
+    
+
+    // execute the query
+	$statement->execute(array(
+		"id" => NULL,
+		"client_id" => $client_id,
+		"first_name" => $first_name,
+		"last_name" => $last_name,
+		"entry_date" => $entry_date,
+		"email" => $email,
+		"new_patient" => $new_patient,
+		"search_term" => $search_term,
+		"reviews" => $reviews,
+		"address" => $city,
+		"phone" => $phone
+	));
+}
+add_action( 'gform_after_submission_1', 'add_entry_to_db', 10, 2 );
+
+
+// disable Gutenberg block editor
+add_filter('use_block_editor_for_post', '__return_false', 10);
+
+
+// disable block editor in widgets
+add_filter( 'gutenberg_use_widgets_block_editor', '__return_false', 100 );
+
+
+// remove Yoast schema
+add_filter( 'wpseo_json_ld_output', '__return_false' );
+
+function wf_admin_scripts() {
+    wp_enqueue_media();
+    wp_enqueue_script( 'admin-js', 'https://assets.thewebsitefactory.org/js/admin.js', array( 'jquery' ), rand(1,999) , true );
+}
+if( is_admin() ){ add_action( 'admin_enqueue_scripts', 'wf_admin_scripts' ); }
+
+
+// custom wp admin settings - header footer scripts
+function wf_site_scripts_page(){
+    ?>
+    <div class="wrap">
+        <h1>Custom Scripts Management</h1>
+        <form method="post" action="options.php">
+        <?php
+            settings_fields("section");
+            do_settings_sections("theme-options");      
+            submit_button(); 
+        ?>          
+        </form>
+    </div>
+    <?php
+}
+
+
+function wf_add_scripts_menu_item(){
+    add_menu_page("Header/Footer Scripts", "Header/Footer Scripts", "edit_theme_options", "custom-settings-panel", "wf_site_scripts_page", null, 4);
+}
+add_action("admin_menu", "wf_add_scripts_menu_item");
+
+
+function header_scripts_field(){
+    ?>
+    <textarea class="settings" name="header_scripts" id="header_scripts" style="width:50%; height:400px"><?php echo get_option('header_scripts'); ?></textarea>
+    <?php
+}
+
+
+function footer_scripts_field(){
+    ?>
+    <textarea class="settings" name="footer_scripts" id="footer_scripts" style="width:50%; height:400px"><?php echo get_option('footer_scripts'); ?></textarea>
+    <?php
+}
+
+
+function wf_display_custom_scripts_fields(){
+    
+    add_settings_section("section", "Edit header and footer scripts here...", null, "theme-options");
+    
+    add_settings_field("header_scripts", "Header Scripts", "header_scripts_field", "theme-options", "section");
+    add_settings_field("footer_scripts", "Footer Scripts", "footer_scripts_field", "theme-options", "section");
+
+    register_setting("section", "header_scripts");
+    register_setting("section", "footer_scripts");
+}
+add_action("admin_init", "wf_display_custom_scripts_fields");
+
+
+// custom shortcodes for wp admin area use
+function phone_strip() {
+    $telphone = esc_attr(get_field('client_phone_number',88));
+    $telphone = preg_replace("/[^0-9]+/", "", $telphone);
+    return $telphone;
+}
+add_shortcode( 'phonestrip', 'phone_strip' );
+
+function get_leader_name() {
+    global $config;
+    echo $config['leader_name'];
+}
+add_shortcode('leader_name', 'get_leader_name');
+
+function get_business_name() {
+    global $config;
+    echo $config['business_name'];
+}
+add_shortcode('business_name', 'get_business_name');
+
+
+// allow SVG upload
+function cc_mime_types( $mimes ){
+    $mimes['svg'] = 'image/svg+xml';
+    return $mimes;
+}
+add_filter( 'upload_mimes', 'cc_mime_types' );
+
+function fix_svg() {
+echo '<style type="text/css">
+        .attachment-266x266, .thumbnail img {
+            width: 100% !important;
+            height: auto !important;
+        }
+        </style>';
+}
+add_action( 'admin_head', 'fix_svg' );
+
+//remove post editor from site settings page admin
+function wf_custom_init() {
+    if ($_GET['post']==88){
+        remove_post_type_support('page', 'editor');
+        remove_post_type_support('page', 'title');
+    }
+}
+add_action( 'init', 'wf_custom_init' );
+
+function fadedAccent($color, $opacity = '.25') {
+ 
+	$default = 'rgb(0,0,0)';
+ 
+	//Return default if no color provided
+	if(empty($color))
+          return $default; 
+ 
+	//Sanitize $color if "#" is provided 
+        if ($color[0] == '#' ) {
+        	$color = substr( $color, 1 );
+        }
+ 
+        //Check if color has 6 or 3 characters and get values
+        if (strlen($color) == 6) {
+                $hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+        } elseif ( strlen( $color ) == 3 ) {
+                $hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+        } else {
+                return $default;
+        }
+ 
+        //Convert hexadec to rgb
+        $rgb =  array_map('hexdec', $hex);
+ 
+        //Check if opacity is set(rgba or rgb)
+        if($opacity){
+        	if(abs($opacity) > 1)
+        		$opacity = 1.0;
+        	$output = 'rgba('.implode(",",$rgb).','.$opacity.')';
+        } else {
+        	$output = 'rgb('.implode(",",$rgb).')';
+        }
+ 
+        //Return rgb(a) color string
+        echo $output;
+}
+
+function color_inverse($color){
+        $color = str_replace('#', '', $color);
+        if (strlen($color) != 6){ return '000000'; }
+        $rgb = '';
+        for ($x=0;$x<3;$x++){
+                $c = 255 - hexdec(substr($color,(2*$x),2));
+                $c = ($c < 0) ? 0 : dechex($c);
+                $rgb .= (strlen($c) < 2) ? '0'.$c : $c;
+        }
+        return '#'.$rgb;
+}
